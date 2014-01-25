@@ -1,0 +1,14 @@
+{
+    "name" : "rushi/swiftmailer-spoolreader",
+    "description" : "Read and display contents of swiftmailer's spool folder",
+    "authors" : [
+        {
+            "name" : "Rushi Vishavadia",
+            "email" : "rushi.v@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "swiftmailer/swiftmailer": "@stable"
+    }
+}
