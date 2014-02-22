@@ -42,6 +42,12 @@ require_once '../config/config.php';
             padding: 0px;
             padding-bottom: 20px;
         }
+        .modal-body iframe {
+            border: 0px;
+            width: 100%;
+            padding: 10px;
+            min-height: 500px;
+        }
         :focus {
             outline: 0 !important;
         }

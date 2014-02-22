@@ -50,10 +50,12 @@
             modal += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
             modal += '<h4 class="modal-title">' + title + '</h4>';
             modal += '</div>';
-            modal += '<div class="modal-body">' + body + '</div>';
+            modal += '<div class="modal-body"><iframe id="iframe-'+id+'"></iframe></div>';
             modal += '</div></div></div>';
 
             $('#modalHolder').append(modal);
+
+            $('#iframe-' + id).contents().find('body').html(body);
         }
 
         function addHeader(field, value) {
