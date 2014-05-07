@@ -24,8 +24,7 @@ class SpoolReader
     {
         $files = scandir($this->spoolDir, SCANDIR_SORT_DESCENDING);
         foreach ($files as $file) {
-            // Skip files that begin with a dot
-            if (preg_match("/^\./", $file)) {
+            if (is_dir($file)) {
                 continue;
             }
             $message = $this->parseFile($this->spoolDir . '/' . $file);
