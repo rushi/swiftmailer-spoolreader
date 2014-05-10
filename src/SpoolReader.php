@@ -22,7 +22,16 @@ class SpoolReader
      */
     public function run()
     {
-        $files = scandir($this->spoolDir, SCANDIR_SORT_DESCENDING);
+        // Get all the files from spool dir
+        $files = glob($this->spoolDir.'/*');
+
+        // Sort the files by time
+        foreach ($files as $f){
+            $tmp[basename($f)] = filemtime($f);
+        }
+        arsort($tmp);
+        $files = array_keys($tmp);
+
         foreach ($files as $file) {
             if (is_dir($file)) {
                 continue;
