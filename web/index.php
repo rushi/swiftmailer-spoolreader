@@ -34,6 +34,7 @@ require_once '../config/config.php';
         .modal {
             width: 1024px;
             margin-left : 120px;
+            overflow-y: hidden;
         }
         .modal-content {
             width: 800px;
