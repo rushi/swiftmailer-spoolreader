@@ -25,10 +25,12 @@ class SpoolReader
         // Get all the files from spool dir
         $files = glob($this->spoolDir.'/*');
 
+        $tmp = [];
         // Sort the files by time
         foreach ($files as $f){
             $tmp[basename($f)] = filemtime($f);
         }
+        
         arsort($tmp);
         $files = array_keys($tmp);
 
