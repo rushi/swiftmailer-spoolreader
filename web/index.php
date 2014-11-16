@@ -11,7 +11,6 @@ require_once '../config/config.php';
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="js/moment.min.js"></script>
-    <script type="text/javascript" src="js/fetch.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <style type="text/css">
         .message-date {
@@ -52,21 +51,36 @@ require_once '../config/config.php';
         :focus {
             outline: 0 !important;
         }
+        .total-messages {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 <div id="main" class="container">
     <div class="row">
-        <h2>Spool Reader</h2>
+        <div class="col-xs-12">
+            <h2>Spool Reader</h2>
+        </div>
     </div>
     <div class="row">
-        <p>
+        <div class="col-xs-12">
             This will read the spool files in <code><?php echo SPOOL_DIR;?></code> and display them here in a tabular format.
-        </p>
+        </div>
+    </div>
+    <div style='margin: 20px -15px;' class="row">
+        <div class="col-xs-8">
+            Found <span class="total-messages">0</span> spooled emails.
+        </div>
+        <div class="col-xs-4">
+            <span style='float:right;'>
+                <button type='button' class='btn btn-sm btn-primary action-fetch'>Refresh</button>
+            </span>
+        </div>
     </div>
     <div class="row">
-        <div style="margin: 10px 0px">Found <span class="total-messages">0</span> spooled emails.</div>
-        <table class="table table-striped table-hover messages">
+        <div class="col-xs-12">
+            <table class="table table-striped table-hover messages">
             <thead>
             <tr>
                 <th>#</th>
@@ -84,8 +98,12 @@ require_once '../config/config.php';
             </tr>
             </tbody>
         </table>
-        <div id="modalHolder"></div>
+            <div id="modalHolder"></div>
+        </div>
     </div>
 </div>
+
+<script type="text/javascript" src="js/fetch.js"></script>
+
 </body>
 </html>
