@@ -6,6 +6,7 @@
             console.debug(messages);
             if(messages.length > 0) {
                 $('table.messages .loading').hide();
+                $('table.messages tbody').empty();
                 $.each(messages, parseMessage);
                 $('[rel=tooltip]').tooltip();
                 $('.total-messages').html(messages.length);
