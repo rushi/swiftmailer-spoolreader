@@ -54,6 +54,9 @@ require_once '../config/config.php';
         .total-messages {
             font-weight: bold;
         }
+        .action-clear, .action-fetch {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -73,9 +76,8 @@ require_once '../config/config.php';
             Found <span class="total-messages">0</span> spooled emails.
         </div>
         <div class="col-xs-4">
-            <span style='float:right;'>
-                <button type='button' class='btn btn-sm btn-primary action-fetch'>Refresh</button>
-            </span>
+            <button type='button' class='btn btn-sm btn-primary pull-right action-fetch'>Refresh</button>
+            <button type='button' class='btn btn-sm btn-primary pull-right action-clear'>Clear Spool</button>
         </div>
     </div>
     <div class="row">
@@ -103,7 +105,7 @@ require_once '../config/config.php';
     </div>
 </div>
 
-<script type="text/javascript" src="js/fetch.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
 
 </body>
 </html>
