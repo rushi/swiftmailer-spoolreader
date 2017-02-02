@@ -2,18 +2,21 @@
     
     function doFetch() {
         $('table.messages .loading').show();
-        $.getJSON('fetch.php', function (messages) {
-            console.debug(messages);
-            if(messages.length > 0) {
-                $('table.messages .loading').hide();
-                $('table.messages tbody').empty();
-                $.each(messages, parseMessage);
-                $('[rel=tooltip]').tooltip();
-                $('.total-messages').html(messages.length);
-            } else {
-                $('table.messages .loading > td').html('No messages found!');
-            }
-        });
+        $.getJSON('fetch.php', onFetch);
+    }
+
+    function onFetch(messages) {
+        console.debug(messages);
+        $(".messages .message-row").remove();
+        if (messages.length > 0) {
+            $('.messages .loading').hide();
+            $.each(messages, parseMessage);
+            $('[rel=tooltip]').tooltip();
+        } else {
+            $('.messages .loading').show();
+            $('.messages .loading > td').html('No messages found!');
+        }
+        $('.total-messages').html(messages.length);
     }
     
     function parseMessage(idx, message) {
@@ -38,7 +41,7 @@
         var toStr = parseEmail(headers['To']) + addHeader('X-Swift-To', parseEmail(headers['X-Swift-To'])) + addHeader('X-Swift-Bcc', parseEmail(headers['X-Swift-Bcc']));
         var to = createTd('to', toStr);
 
-        var tr = '<tr data-message-id="' + messageId + '" class="message-row-' + idx + '">' + num + date + from + replyTo + to + subject + actions + '</tr>';
+        var tr = '<tr data-message-id="' + messageId + '" class="message-row message-row-' + idx + '">' + num + date + from + replyTo + to + subject + actions + '</tr>';
         $('table.messages tbody').append(tr);
 
         createModal('modal-' + messageId, headers['Subject'], message['body']);
@@ -94,7 +97,12 @@
         return emailStr;
     }
 
-    $('.action-fetch').click(doFetch);    
-    
+    function clearMessages() {
+        $.getJSON('fetch.php', {clear: 1}, onFetch);
+    }
+
+    $('.action-fetch').click(doFetch);
+    $('.action-clear').click(clearMessages);
+
     $(document).ready(doFetch);
 }(jQuery, this));

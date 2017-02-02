@@ -46,6 +46,18 @@ class SpoolReader
     }
 
     /**
+     * Deletes all messages in the spool directory
+     */
+    public function clear()
+    {
+        // Get all the files from spool dir
+        $files = glob($this->spoolDir . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+
+    /**
      * Parse a spool email and return it's contents as an array
      *
      * @param string $filename Absolute path to the file
