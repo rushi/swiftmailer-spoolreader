@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../src/SpoolReader.php';
 require_once dirname(__FILE__) . '/../config/config.php';
 
 $spoolReader = new SpoolReader(SPOOL_DIR);
-if ($_GET['clear'] == 1) {
+if (isset($_GET['clear']) && $_GET['clear'] == 1) {
     $spoolReader->clear();
 }
 $messages = $spoolReader->run();
