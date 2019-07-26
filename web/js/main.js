@@ -79,16 +79,16 @@
         return moment(date * 1000).format('lll');
     }
 
-    function parseEmail(email) {
+    function parseEmail(email) {   
         if (typeof email == "string") {
             return email;
         }
 
-        var emailStr;
+        var emailStr = '';
         for (key in email) {
             var name = email[key];
             if (name) {
-                emailStr = '<abbr rel="tooltip" title="' + key + '">' + name + '</abbr>';
+                emailStr += '<abbr rel="tooltip" title="' + key + '">' + name + '</abbr><br>';
             } else {
                 emailStr = key;
             }
