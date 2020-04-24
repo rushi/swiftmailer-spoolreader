@@ -1,16 +1,17 @@
-(function ($, window) {
-    
-    function doFetch() {
+(async function ($, window) {
+
+    async function doFetch() {
         $('table.messages .loading').show();
-        $.getJSON('fetch.php', onFetch);
+        let response = await fetch('fetch.php');
+        onFetch(await response.json());
     }
 
     function onFetch(messages) {
-        console.debug(messages);
+        console.log(messages);
         $(".messages .message-row").remove();
         if (messages.length > 0) {
             $('.messages .loading').hide();
-            $.each(messages, parseMessage);
+            messages.forEach(parseMessage);
             $('[rel=tooltip]').tooltip();
         } else {
             $('.messages .loading').show();
@@ -18,16 +19,16 @@
         }
         $('.total-messages').html(messages.length);
     }
-    
-    function parseMessage(idx, message) {
+
+    function parseMessage(message, idx) {
         var headers = message['headers'],
             messageId = headers['Message-ID'][0].replace(/@.*$/,'');
 
         // Create the td's required
-        var num = createTd('idx', idx+1),
+        const num = createTd('idx', idx+1),
             date = createTd('date', parseDate(headers['Date'])),
             subject = createTd('subject', headers['Subject']),
-            actions = createTd('actions', '<button type="button" data-toggle="modal" data-target="#modal-'+messageId+'" class="btn btn-sm btn-primary">Show Email</button>');
+            actions = createTd('actions', `<button type="button" data-toggle="modal" data-target="#modal-${messageId}" class="btn btn-sm btn-primary">Show Email</button>`);
 
         var replyTo = '',
             fromOpts = 'colspan="2"';
@@ -38,19 +39,23 @@
         var from = createTd('from', parseEmail(headers['From']), fromOpts);
 
         // To address is special - it will show 'To' and X-Swift-To + X-Swift-BCC
-        var toStr = parseEmail(headers['To']) + addHeader('X-Swift-To', parseEmail(headers['X-Swift-To'])) + addHeader('X-Swift-Bcc', parseEmail(headers['X-Swift-Bcc']));
+        var toStr = parseEmail(headers['To']) + addHeader('X-Swift-To', parseEmail(headers['X-Swift-To']));
+        if (headers['X-Swift-Bcc']) {
+            toStr += addHeader('X-Swift-Bcc', parseEmail(headers['X-Swift-Bcc']));
+        }
         var to = createTd('to', toStr);
 
-        var tr = '<tr data-message-id="' + messageId + '" class="message-row message-row-' + idx + '">' + num + date + from + replyTo + to + subject + actions + '</tr>';
+        console.log('Parse X-Swift-To', headers['X-Swift-To']);
+
+        const tr = `<tr data-message-id="${messageId}" class="message-row message-row-${idx}">${num} ${date} ${from} ${replyTo} ${to} ${subject} ${actions} </tr>`;
         $('table.messages tbody').append(tr);
 
-        createModal('modal-' + messageId, headers['Subject'], message['body']);
+        createModal(`modal-${messageId}`, headers['Subject'], message['body']);
     }
 
     function createTd(field, value, opts) {
-        opts = (!opts) ? '' : opts;
-        var str = '<td class="message message-' + field + '"' + opts + '>' + value + "</td>";
-        return str;
+        opts = opts || '';
+        return `<td class="message message-${field}" ${opts}>${value}</td>`;
     }
 
     function createModal(id, title, body) {
@@ -67,9 +72,11 @@
     }
 
     function addHeader(field, value) {
-        if(field != '') {
-            return '<div class="message-additional-header">' +
-                '<span class="field-name">' + field + '</span><span class="field-value">' + value + '</span></div>';
+        if (field != '') {
+            return `<div class="message-additional-header">
+                <span class="field-name">${field}</span>
+                <span class="field-value">${value}</span>
+            </div>`;
         }
 
         return '';
@@ -79,7 +86,7 @@
         return moment(date * 1000).format('lll');
     }
 
-    function parseEmail(email) {   
+    function parseEmail(email) {
         if (typeof email == "string") {
             return email;
         }
@@ -88,7 +95,7 @@
         for (key in email) {
             var name = email[key];
             if (name) {
-                emailStr += '<abbr rel="tooltip" title="' + key + '">' + name + '</abbr><br>';
+                emailStr += `<abbr rel="tooltip" title=${key}>${name}</abbr><br>`;
             } else {
                 emailStr = key;
             }
@@ -97,12 +104,13 @@
         return emailStr;
     }
 
-    function clearMessages() {
-        $.getJSON('fetch.php', {clear: 1}, onFetch);
+    async function clearMessages() {
+        let response = await fetch('fetch.php?clear=1');
+        onFetch(await response.json());
     }
 
     $('.action-fetch').click(doFetch);
     $('.action-clear').click(clearMessages);
 
-    $(document).ready(doFetch);
+    doFetch();
 }(jQuery, this));

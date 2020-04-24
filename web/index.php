@@ -13,12 +13,18 @@ require_once '../config/config.php';
     <script type="text/javascript" src="js/moment.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <style type="text/css">
+        @import url("https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700&display=swap");
+        html, body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        #main {
+            padding: 0 50px;
+        }
         .message-date {
             width: 170px;
         }
         .message-additional-header {
-            font-size: 11px;
-            font-family: verdana;
+            font-size: 12px;
             margin-top: 3px;
         }
         .message-additional-header .field-name {
@@ -29,6 +35,7 @@ require_once '../config/config.php';
         }
         .message-actions {
             vertical-align: middle;
+            text-align: right;
         }
         .modal {
             width: 1024px;
@@ -60,27 +67,23 @@ require_once '../config/config.php';
     </style>
 </head>
 <body>
-<div id="main" class="container">
+<div id="main" class="container-fluid">
     <div class="row">
         <div class="col-xs-12">
             <h2>Spool Reader</h2>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xs-12">
-            This will read the spool files in <code><?php echo SPOOL_DIR;?></code> and display them here in a tabular format.
+    <div class="row" style='margin-top: 20px;'>
+        <div class="col-xs-6">
+            Found <span class="total-messages">0</span> spooled emails in in <code><?php echo SPOOL_DIR;?></code>
+        </div>
+        <div class="col-xs-6">
+            <button type='button' class='btn btn-sm btn-danger pull-right action-clear'>Clear Spool</button>
+            &nbsp;&nbsp;
+            <button type='button' class='btn btn-sm btn-primary pull-right action-fetch'>Refresh</button>            
         </div>
     </div>
-    <div style='margin: 20px -15px;' class="row">
-        <div class="col-xs-8">
-            Found <span class="total-messages">0</span> spooled emails.
-        </div>
-        <div class="col-xs-4">
-            <button type='button' class='btn btn-sm btn-primary pull-right action-fetch'>Refresh</button>
-            <button type='button' class='btn btn-sm btn-primary pull-right action-clear'>Clear Spool</button>
-        </div>
-    </div>
-    <div class="row">
+    <div class="row" style='margin-top: 20px;'>
         <div class="col-xs-12">
             <table class="table table-striped table-hover messages">
             <thead>
@@ -91,7 +94,7 @@ require_once '../config/config.php';
                 <th>Reply To</th>
                 <th>To</th>
                 <th>Subject</th>
-                <th>Actions</th>
+                <th class='text-right'>Actions</th>
             </tr>
             </thead>
             <tbody>
