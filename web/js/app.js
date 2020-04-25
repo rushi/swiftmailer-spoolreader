@@ -59,6 +59,15 @@ const EmailRow = {
         return m("button", props, "Show Email");
     },
 
+    formatDate: (unixtime) => {
+        const date = moment(unixtime * 1000);
+        let dateStr = date.format('MMM M HH:MM A');
+        if (date.format('l') === moment().format('l')) {
+            dateStr = 'Today ' + date.format('HH:MM A');
+        }
+        return m("span.date", [dateStr, m('small.relative-date', date.fromNow())]);
+    },
+
     view: function (vnode) {
         console.log('Rendering EmailRow', vnode.attrs);
 
@@ -70,7 +79,7 @@ const EmailRow = {
 
         return [m("tr", [
             m("td", data.idx),
-            m("td", m("span.date", [date.format('lll'), m('small.relative-date', date.fromNow())])),
+            m("td", this.formatDate(headers['Date'])),
             m("td", this.formatEmail(headers['From'])),
             m("td", replyTo),
             m("td", this.renderTo(headers)),
@@ -91,8 +100,8 @@ const EmailList = {
 
         const thead = m("thead", [
             m("tr", [
-                m("th", "#"), m("th", "Date"), m("th", "From"), m("th", "Reply To"), m("th", "To"),
-                m("th", "Subject"), m("th", "Actions")
+                m("th", "#"), m("th.date", "Date"), m("th.email", "From"), m("th.email", "Reply To"), 
+                m("th.email", "To"), m("th", "Subject"), m("th.actions", "Actions")
             ])
         ]);
 
