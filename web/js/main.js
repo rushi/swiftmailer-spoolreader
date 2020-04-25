@@ -1,116 +1,106 @@
-(async function ($, window) {
+const Messages = {
+    list: [],
+    fetch: (vnode, params = {}) => m.request({url: "fetch.php", params}).then((result) => Messages.list = result),
+}
 
-    async function doFetch() {
-        $('table.messages .loading').show();
-        let response = await fetch('fetch.php');
-        onFetch(await response.json());
-    }
+// Hack to inject HTML into the body of an iFrame
+const IframeNode = {                  
+    oncreate: vnode => m.render(vnode.dom.contentDocument.documentElement, vnode.children),
+    view: vnode => m('iframe', vnode.attrs)
+}
 
-    function onFetch(messages) {
-        console.log(messages);
-        $(".messages .message-row").remove();
-        if (messages.length > 0) {
-            $('.messages .loading').hide();
-            messages.forEach(parseMessage);
-            $('[rel=tooltip]').tooltip();
-        } else {
-            $('.messages .loading').show();
-            $('.messages .loading > td').html('No messages found!');
-        }
-        $('.total-messages').html(messages.length);
-    }
+const EmailRow = {
 
-    function parseMessage(message, idx) {
-        var headers = message['headers'],
-            messageId = headers['Message-ID'][0].replace(/@.*$/,'');
-
-        // Create the td's required
-        const num = createTd('idx', idx+1),
-            date = createTd('date', parseDate(headers['Date'])),
-            subject = createTd('subject', headers['Subject']),
-            actions = createTd('actions', `<button type="button" data-toggle="modal" data-target="#modal-${messageId}" class="btn btn-sm btn-primary">Show Email</button>`);
-
-        var replyTo = '',
-            fromOpts = 'colspan="2"';
-        if(parseEmail(headers['Reply-To']) != parseEmail(headers['From'])) {
-            replyTo = createTd('reply-to', parseEmail(headers['Reply-To']));
-            fromOpts = '';
-        }
-        var from = createTd('from', parseEmail(headers['From']), fromOpts);
-
-        // To address is special - it will show 'To' and X-Swift-To + X-Swift-BCC
-        var toStr = parseEmail(headers['To']) + addHeader('X-Swift-To', parseEmail(headers['X-Swift-To']));
-        if (headers['X-Swift-Bcc']) {
-            toStr += addHeader('X-Swift-Bcc', parseEmail(headers['X-Swift-Bcc']));
-        }
-        var to = createTd('to', toStr);
-
-        console.log('Parse X-Swift-To', headers['X-Swift-To']);
-
-        const tr = `<tr data-message-id="${messageId}" class="message-row message-row-${idx}">${num} ${date} ${from} ${replyTo} ${to} ${subject} ${actions} </tr>`;
-        $('table.messages tbody').append(tr);
-
-        createModal(`modal-${messageId}`, headers['Subject'], message['body']);
-    }
-
-    function createTd(field, value, opts) {
-        opts = opts || '';
-        return `<td class="message message-${field}" ${opts}>${value}</td>`;
-    }
-
-    function createModal(id, title, body) {
-        var modal = '<div id="' + id + '" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">';
-        modal += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-        modal += '<h4 class="modal-title">' + title + '</h4>';
-        modal += '</div>';
-        modal += '<div class="modal-body"><iframe id="iframe-'+id+'"></iframe></div>';
-        modal += '</div></div></div>';
-
-        $('#modalHolder').append(modal);
-
-        $('#iframe-' + id).contents().find('body').html(body);
-    }
-
-    function addHeader(field, value) {
-        if (field != '') {
-            return `<div class="message-additional-header">
-                <span class="field-name">${field}</span>
-                <span class="field-value">${value}</span>
-            </div>`;
-        }
-
-        return '';
-    }
-
-    function parseDate(date) {
-        return moment(date * 1000).format('lll');
-    }
-
-    function parseEmail(email) {
-        if (typeof email == "string") {
+    formatEmail: (email, abbr = false) => {
+        if (typeof email === 'string') {
             return email;
         }
 
-        var emailStr = '';
-        for (key in email) {
-            var name = email[key];
-            if (name) {
-                emailStr += `<abbr rel="tooltip" title=${key}>${name}</abbr><br>`;
-            } else {
-                emailStr = key;
-            }
+        const address = Object.keys(email)[0];
+        const name = Object.values(email)[0];
+        if (abbr) {
+            return name ? m('abbr', {rel: 'tooltip', title: address}, name) : m('span', address);
+        } else {
+            return name ? m('span.email', [name, m('small', address)]) : m('span', address);
+        }
+    },
+
+    renderTo: function (headers) {
+        if (headers['X-Swift-To']) {
+            let xSwiftTo = headers['X-Swift-To'];
+            const address = Object.keys(xSwiftTo)[0];
+            const name = Object.values(xSwiftTo)[0];
+            return m('span.xswift', [name, m('small', address), this.formatEmail(headers['To'], true)]);
         }
 
-        return emailStr;
+        return this.formatEmail(headers['To']);
+    },
+
+    modal: function(message) {
+        const headers = message.headers;
+        const messageId = headers['Message-ID'][0].replace(/@.*$/,'');
+
+        return m(".modal.fade", {id: `modal-${messageId}`}, [
+            m(".modal-dialog", [
+                m(".modal-content", [
+                    m(".modal-header", [
+                        m("button", {type: "button", class: "close", "data-dismiss": "modal"}, "×"),
+                        m("h4.modal-title", headers['Subject'])
+                    ]),
+                    m(".modal-body", m(IframeNode, {id: `iframe-${messageId}`}, m.trust(message.body)))
+                ])
+            ])
+        ]);
+    },
+
+    btnShowEmail: (message) => {
+        const messageId = message.headers['Message-ID'][0].replace(/@.*$/,'');
+        const props = {type: "button", "data-toggle": "modal", "data-target": `#modal-${messageId}`, class: "btn btn-sm btn-primary"};
+        return m("button", props, "Show Email");
+    },
+
+    view: function (vnode) {
+        console.log('Rendering EmailRow', vnode.attrs);
+
+        const data = vnode.attrs;
+        const headers = data.message.headers;
+
+        const date = moment(headers['Date'] * 1000);
+        const replyTo = headers['Reply-To'] ? this.formatEmail(headers['Reply-To']) : m('span', 'N/A');
+
+        return [m("tr", [
+            m("td", data.idx),
+            m("td", m("span.date", [date.format('lll'), m('small.relative-date', date.fromNow())])),
+            m("td", this.formatEmail(headers['From'])),
+            m("td", replyTo),
+            m("td", this.renderTo(headers)),
+            m("td", headers['Subject']),
+            m("td", this.btnShowEmail(data.message))
+        ]), this.modal(data.message)];
     }
+}
 
-    async function clearMessages() {
-        let response = await fetch('fetch.php?clear=1');
-        onFetch(await response.json());
+const EmailList = {
+    oninit: Messages.fetch,
+    data: {idx: 0}, // Initial state
+
+    view: function (vnode) {
+        vnode.state.data.idx = 0; // Reset count to zero when the list is rendered
+        $('.total-messages').html(Messages.list.length);
+        console.log('EmailList vnode is', Messages.list.length, vnode.state.data, vnode);
+
+        const thead = m("thead", [
+            m("tr", [
+                m("th", "#"), m("th", "Date"), m("th", "From"), m("th", "Reply To"), m("th", "To"),
+                m("th", "Subject"), m("th", "Actions")
+            ])
+        ]);
+
+        const tbody = m("tbody", Messages.list.map((message) => m(EmailRow, {message, idx: ++vnode.state.data.idx})));
+        return [thead, tbody];
     }
+}
 
-    $('.action-fetch').click(doFetch);
-    $('.action-clear').click(clearMessages);
-
-    doFetch();
-}(jQuery, this));
+m.mount(document.querySelector('table'), EmailList);
+$('.action-fetch').on('click', Messages.fetch);
+$('.action-clear').on('click', Messages.fetch.bind(this, null, {clear: 1}));
