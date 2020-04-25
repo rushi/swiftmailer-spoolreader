@@ -6,19 +6,18 @@ require_once '../config/config.php';
 <head>
     <title>Swiftmailer Spool Reader</title>
     <meta charset="utf-8">
-    <!-- Todo change to bootstrap 4 -->
-    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
-    <script type="text/javascript" src="js/lib/jquery-2.1.0.min.js"></script>
-    <script type="text/javascript" src="js/lib/moment.min.js"></script>
-    <script type="text/javascript" src="js/lib/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/mithril/mithril.js"></script>
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../node_modules/moment/moment.js"></script>
+    <script type="text/javascript" src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="../node_modules/mithril/mithril.min.js"></script>
 </head>
 <body>
 <div class="main container-fluid">
     <div class="row">
         <div class="col">
-            <h2>Spool Reader</h2>
+            <h2>Swiftmailer Spool Reader</h2>
         </div>
     </div>
     <div class="row py-2">
