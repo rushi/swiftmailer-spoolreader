@@ -48,7 +48,7 @@ require_once '../config/config.php';
     </div>
 </div>
 
-<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
 
 </body>
 </html>
