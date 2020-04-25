@@ -9,6 +9,11 @@ body {
     font-size: 12px;
 }
 
+.btn svg {
+    font-size: 14px;
+    font-weight: bolder;
+}
+
 .table,
 body {
     font-size: 14px;
