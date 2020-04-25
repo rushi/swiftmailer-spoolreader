@@ -4,7 +4,7 @@ const Messages = {
 }
 
 // Hack to inject HTML into the body of an iFrame
-const IframeNode = {                  
+const IframeNode = {
     oncreate: vnode => m.render(vnode.dom.contentDocument.documentElement, vnode.children),
     view: vnode => m('iframe', vnode.attrs)
 }
@@ -40,12 +40,21 @@ const EmailRow = {
         const headers = message.headers;
         const messageId = headers['Message-ID'][0].replace(/@.*$/,'');
 
+        const modalHeader = m("h6.modal-title.float-left", headers['Subject']);
+        const button = m("button", {type: "button", class: "close", "data-dismiss": "modal"}, "×");
+        const modalInfo = m('.row.py-1', [
+            m('.col-1.label', 'From'), m('.col-5.value', this.formatEmail(headers['From'])),
+            m('.col-1.label', 'To'), m('.col-5.value', this.renderTo(headers))
+        ]);
+
         return m(".modal", {id: `modal-${messageId}`}, [
             m(".modal-dialog.modal-dialog-scrollable", [
                 m(".modal-content", [
                     m(".modal-header", [
-                        m("h5.modal-title", headers['Subject']),
-                        m("button", {type: "button", class: "close", "data-dismiss": "modal"}, "×")
+                        m('.container-fluid', [
+                            m('.row', m('.col.px-0', [modalHeader, button])),
+                            modalInfo
+                        ])
                     ]),
                     m(".modal-body", m(IframeNode, {id: `iframe-${messageId}`}, m.trust(message.body)))
                 ])
@@ -106,7 +115,7 @@ const EmailList = {
 
         const thead = m("thead", [
             m("tr", [
-                m("th", "#"), m("th.date", "Date"), m("th.email", "From"), m("th.email", "Reply To"), 
+                m("th", "#"), m("th.date", "Date"), m("th.email", "From"), m("th.email", "Reply To"),
                 m("th.email", "To"), m("th", "Subject"), m("th.actions", "Actions")
             ])
         ]);

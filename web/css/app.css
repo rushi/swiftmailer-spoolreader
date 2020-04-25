@@ -20,7 +20,7 @@ body {
 }
 
 th.date {
-    min-width: 125px;
+    min-width: 130px;
 }
 
 th.email {
@@ -65,12 +65,42 @@ span.xswift abbr {
 
 span.xswift span:before,
 span.xswift abbr:before {
-    content: "to: ";
     font-weight: 500;
 }
 
 .modal-dialog {
     max-width: 800px;
+}
+
+.modal-header {
+    padding-bottom: 0.5rem;
+    background-color: #f9f9f9;
+}
+
+.modal-header small {
+    display: inline;
+    margin-left: 5px;
+}
+
+.modal-header span.xswift span {
+    display: block;
+}
+
+.modal-header .label {
+    padding-left: 0;
+    flex: 0 0 4%;
+}
+
+.modal-header .value {
+    padding-left: 0;
+}
+
+.modal-header .value small:before {
+    content: "<";
+}
+
+.modal-header .value small:after {
+    content: ">";
 }
 
 .modal-body {
