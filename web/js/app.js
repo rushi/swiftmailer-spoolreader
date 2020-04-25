@@ -69,7 +69,7 @@ const EmailRow = {
     },
 
     view: function (vnode) {
-        console.log('Rendering EmailRow', vnode.attrs);
+        // console.log('Rendering EmailRow', vnode.attrs);
 
         const data = vnode.attrs;
         const headers = data.message.headers;
@@ -93,10 +93,16 @@ const EmailList = {
     oninit: Messages.fetch,
     data: {idx: 0}, // Initial state
 
+    oncreate: function(vnode) {
+        setInterval(m.redraw, 30000);
+    },
+
     view: function (vnode) {
         vnode.state.data.idx = 0; // Reset count to zero when the list is rendered
-        $('.total-messages').html(Messages.list.length);
-        console.log('EmailList vnode is', Messages.list.length, vnode.state.data, vnode);
+        const count = Messages.list.length;
+        const title = document.title.replace(/^\(\d+\) /, '');
+        document.title = `(${count}) ${title}`;
+        $('.total-messages').html(count);
 
         const thead = m("thead", [
             m("tr", [
