@@ -40,12 +40,12 @@ const EmailRow = {
         const headers = message.headers;
         const messageId = headers['Message-ID'][0].replace(/@.*$/,'');
 
-        return m(".modal.fade", {id: `modal-${messageId}`}, [
-            m(".modal-dialog", [
+        return m(".modal", {id: `modal-${messageId}`}, [
+            m(".modal-dialog.modal-dialog-scrollable", [
                 m(".modal-content", [
                     m(".modal-header", [
-                        m("button", {type: "button", class: "close", "data-dismiss": "modal"}, "×"),
-                        m("h4.modal-title", headers['Subject'])
+                        m("h5.modal-title", headers['Subject']),
+                        m("button", {type: "button", class: "close", "data-dismiss": "modal"}, "×")
                     ]),
                     m(".modal-body", m(IframeNode, {id: `iframe-${messageId}`}, m.trust(message.body)))
                 ])
