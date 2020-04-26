@@ -1,6 +1,10 @@
 const Messages = {
     list: [],
-    fetch: (vnode, params = {}) => m.request({url: "fetch.php", params}).then((result) => Messages.list = result),
+    lastRefreshed: moment(),
+    fetch: (vnode, params = {}) => m.request({url: "fetch.php", params}).then((result) => {
+        Messages.lastRefreshed = moment();
+        Messages.list = result;
+    }),
 }
 
 // Hack to inject HTML into the body of an iFrame
@@ -79,11 +83,8 @@ const EmailRow = {
 
     view: function (vnode) {
         // console.log('Rendering EmailRow', vnode.attrs);
-
         const data = vnode.attrs;
         const headers = data.message.headers;
-
-        const date = moment(headers['Date'] * 1000);
         const replyTo = headers['Reply-To'] ? this.formatEmail(headers['Reply-To']) : m('span', 'N/A');
 
         return [m("tr", [
@@ -112,6 +113,7 @@ const EmailList = {
         const title = document.title.replace(/^\(\d+\) /, '');
         document.title = `(${count}) ${title}`;
         $('.total-messages').html(count);
+        $('.last-refreshed').html(Messages.lastRefreshed.fromNow());
 
         const thead = m("thead", [
             m("tr", [

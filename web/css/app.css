@@ -121,3 +121,28 @@ span.xswift abbr:before {
 .action-fetch {
     margin-left: 10px;
 }
+
+footer {
+    height: 25px;
+    padding: 0 35px;
+    font-size: 12px;
+    color: #777777;
+    background-color: #f9f9f9;
+    border-top: 1px solid #DDDDDD;
+    display: flex;
+    align-items: center;
+}
+
+footer a {
+    color: #666666;
+}
+
+footer svg {
+    width: 0.8rem;
+    position: relative;
+    top: -1px;
+}
+
+footer a:hover {
+    color: #111111;
+}
