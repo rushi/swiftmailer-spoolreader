@@ -74,9 +74,9 @@ const EmailRow = {
 
     formatDate: (unixtime) => {
         const date = moment(unixtime * 1000);
-        let dateStr = date.format('MMM D HH:MM a');
+        let dateStr = date.format('MMM D HH:MM');
         if (date.format('l') === moment().format('l')) {
-            dateStr = 'Today ' + date.format('HH:MM a');
+            dateStr = 'Today ' + date.format('HH:MM');
         }
         return m("span.date", [dateStr, m('small.relative-date', date.fromNow())]);
     },
