@@ -8,8 +8,10 @@ const Messages = {
 }
 
 // Hack to inject HTML into the body of an iFrame
+const proxy = vnode => m.render(vnode.dom.contentDocument.documentElement, vnode.children);
 const IframeNode = {
-    oncreate: vnode => m.render(vnode.dom.contentDocument.documentElement, vnode.children),
+    oncreate: proxy,
+    onupdate: proxy,
     view: vnode => m('iframe', vnode.attrs)
 }
 
@@ -60,7 +62,7 @@ const EmailRow = {
                             modalInfo
                         ])
                     ]),
-                    m(".modal-body", m(IframeNode, {id: `iframe-${messageId}`}, m.trust(message.body)))
+                    m(".modal-body", m(IframeNode, {onload: {}, id: `iframe-${messageId}`}, m.trust(message.body)))
                 ])
             ])
         ]);
