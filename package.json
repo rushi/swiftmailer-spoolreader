@@ -1,0 +1,25 @@
+{
+  "name": "swiftmailer-spoolreader",
+  "version": "1.0.0",
+  "description": "Swiftmailer Spool Reader",
+  "main": "web/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rushi/swiftmailer-spoolreader.git"
+  },
+  "author": "Rushi Vishavadia <rushi.v@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rushi/swiftmailer-spoolreader/issues"
+  },
+  "homepage": "https://github.com/rushi/swiftmailer-spoolreader#readme",
+  "dependencies": {
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.5.0",
+    "mithril": "^2.0.4",
+    "moment": "^2.24.0"
+  }
+}
