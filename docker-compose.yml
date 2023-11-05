@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  swiftmailer-spool:
+    build: .
+    image: swiftmailer-spool
+    container_name: swiftmailer-spool
+    ports:
+      - "3000:80"
+    volumes:
+      - xola_xola_spool:/var/www/spool
+    networks:
+      - xola_xola_network
+
+networks:
+  xola_xola_network:
+    external: true
+
+volumes:
+  xola_xola_spool:
+    external: true
