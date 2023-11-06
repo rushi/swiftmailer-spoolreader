@@ -15,8 +15,9 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash \
     && apt-get install -y nodejs php php-fpm php-zip nginx
 
 COPY . .
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN composer update && composer install
 
 # Stage 2: Final Image
 FROM php:7.4-apache

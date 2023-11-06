@@ -9,7 +9,7 @@
     ],
     "license": "MIT",
     "require": {
-        "swiftmailer/swiftmailer": "@stable"
+        "swiftmailer/swiftmailer": "^6.0"
     },
     "scripts": {
         "post-install-cmd": [
