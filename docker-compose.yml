@@ -6,7 +6,7 @@ services:
     image: swiftmailer-spool
     container_name: swiftmailer-spool
     ports:
-      - "3000:80"
+      - "11080:80"
     volumes:
       - xola_xola_spool:/var/www/spool
     networks:

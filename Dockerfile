@@ -9,8 +9,6 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && apt-get install -y curl gnupg tzdata unzip git
 
-ENV TZ=America/New_York
-
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash \
     && apt-get install -y nodejs php php-fpm php-zip nginx
 
