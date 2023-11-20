@@ -10,10 +10,10 @@ services:
     volumes:
       - xola_xola_spool:/var/www/spool
     networks:
-      - xola_xola_network
+      - xola_default
 
 networks:
-  xola_xola_network:
+  xola_default:
     external: true
 
 volumes:
